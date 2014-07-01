@@ -12,7 +12,7 @@ module Wechat
 
       attr_accessor :wechat, :token
 
-      def on message_type, with: nil, respond: nil, &block
+      def on(message_type, with=nil, respond=nil, &block)
         raise "Unknow message type" unless message_type.in? [:text, :image, :voice, :video, :location, :link, :event, :fallback]
         config=respond.nil? ? {} : {:respond=>respond}
         config.merge!(:proc=>block) if block_given?
@@ -32,7 +32,7 @@ module Wechat
         @responders[type] ||= Array.new
       end
 
-      def responder_for message, &block
+      def responder_for(message, &block)
         message_type = message[:MsgType].to_sym
         responders = responders(message_type)
 
@@ -50,7 +50,7 @@ module Wechat
 
       private 
 
-      def match_responders responders, value
+      def match_responders(responders, value)
         matched = responders.inject({scoped:nil, general:nil}) do |matched, responder|
           condition = responder[:with]
 
